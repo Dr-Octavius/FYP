@@ -1,0 +1,44 @@
+@startuml
+
+rectangle "Main Pipeline" {
+  agent Oracle
+  
+  folder "Training Data" as DataCollection {
+    file "SA_Singapore.csv"
+    file "SA_Singapore_Deals.csv"
+    file "SA_Singapore_Calls.csv"
+    folder "calls"
+  }
+    
+  folder "pipeline" {
+    file "data_preparation.py" as DataPrep
+    file "data_preprocessing.py" as DataProc
+    file "feature_engineering.py" as FeatEng
+    file "train.py" as ModelTrain
+    file "evaluate.py" as ModelEval
+    
+    folder "models" as Models {
+      folder "Trained_Models"
+      folder "Training_Models" 
+    }
+    folder "results" as Results {
+    }
+  }
+}
+
+DataCollection -down-> DataPrep #CC5500 : "1. Read & Prepare \n Data"
+DataPrep -right-> DataProc #CC5500 : "2. Process data"
+DataProc -down-> FeatEng #CC5500 : "4. Create \n features"
+FeatEng -left-> ModelTrain #CC5500 : "5. Train Models"
+ModelTrain -down-> ModelEval #CC5500 : "6. Evaluate \n Models"
+ModelEval -up-> Results #CC5500 : "7a. Store \n Results"
+ModelEval --> Training_Models #CC5500 : "7b. Save Models"
+Results <-left- Oracle #8B8000 : "Assess \n Results"
+ModelEval <-left- Oracle #8B8000 : "Assess \n Evaluation"
+Oracle ..> Training_Models #005500 : "9a. Accepts \nResults"
+Training_Models ..> Trained_Models #005500 : "10a. Accepts \nResults"
+Oracle ..> Training_Models #FF0000 : "9b. Rejects \nModels"
+Training_Models .up.> FeatEng #FF0000 : "10b. Finetune \nFeatures"
+Training_Models .up.> ModelTrain #FF0000 : "10b. Finetune \nTraining"
+
+@enduml

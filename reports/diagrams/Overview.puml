@@ -1,0 +1,30 @@
+@startuml
+
+rectangle "DBAL/DEAL Space" {
+  package data {
+      folder unlabelled
+      folder labelled
+  }
+  package notebooks
+}
+
+rectangle "Main Pipeline" as main_pipeline {
+    file "train.py" as ModelTrain
+    file "evaluate.py" as ModelEval
+    folder models {
+      folder "Trained_models"
+      folder "Training_models"
+    }
+}
+
+rectangle "Helper Modules"{
+  package "api"
+  package "data-collector"
+}
+
+labelled --> main_pipeline : Provides data
+api --> unlabelled : Assists with \n external data
+"data-collector" --> unlabelled : Assists with \n external data
+ModelTrain --> models : Stores \n Models
+
+@enduml

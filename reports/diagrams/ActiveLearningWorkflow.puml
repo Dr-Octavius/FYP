@@ -1,0 +1,25 @@
+@startuml
+
+rectangle "Active Learning Workflow" as ActiveLearning {
+  package "Ensemble Models" as EM {
+      rectangle "XLM-R Model 1" as XLMR1
+      rectangle "XLM-R Model 2" as XLMR2
+      rectangle "XLM-R Model 3" as XLMR3
+  }
+
+  node "Entropy Calculation" as EntropyCalc
+  node "Uncertainty Sampling" as UncertaintySampling
+  node "Labelling Queue" as LabellingQueue
+  node "Model Update" as ModelUpdate
+
+  XLMR1 -down-> EntropyCalc : Prediction \n Output
+  XLMR2 -down-> EntropyCalc : Prediction \n Output
+  XLMR3 -down-> EntropyCalc : Prediction \n Output
+  
+  EntropyCalc -down-> UncertaintySampling : High Entropy \n Samples
+  UncertaintySampling -right-> LabellingQueue : Prioritised for \n Labelling
+  LabellingQueue -up-> ModelUpdate : Labeled \n Samples
+  ModelUpdate -up-> EM : Update \n Models
+}
+
+@enduml

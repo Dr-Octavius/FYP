@@ -1,0 +1,36 @@
+@startuml
+
+package data
+
+package src {
+  package "api" {
+      
+      file ApiService as "ApiService.py"
+      file ApiToken as "ApiToken.py"
+      file ServiceFactory as "ServiceFactory.py" 
+  
+      ServiceFactory --> ApiService : Creates
+      ApiService --> ApiToken : Authenticates \n with
+  }
+  
+  package "data-collector" as dc {
+      file GetRecordings as "GetRecordings.py"
+  }
+}
+
+rectangle "Main Pipeline" as pipeline {
+  file train.py as ModelTrain
+  file evaluate.py as ModelEval
+}
+
+agent FeedbackListener
+agent RetrainingTrigger
+
+pipeline --> FeedbackListener : Feedback \n Loop
+FeedbackListener --> api : Triggers \nFetch
+FeedbackListener --> dc : Triggers \nScrape
+api --> data 
+dc --> data
+data --> RetrainingTrigger : Triggers Retrain
+RetrainingTrigger --> pipeline : Initiates new \n trainin
+@enduml

@@ -1,0 +1,37 @@
+@startuml
+
+rectangle "Foundation Model Architecture" as ModelWrapper {
+  
+  package "Meta Models" as MM {
+    rectangle "T5-Responder" as T5_1
+    rectangle "T5-Planner" as T5_2
+  }
+  
+  package "Ensemble 1" {
+    rectangle "XLM-R-General" as XLMR_3
+    rectangle "RFC" as RFC
+    rectangle "SVM" as SVM
+    rectangle "LR" as LR
+  }
+  
+  package "Ensemble 2" {
+    rectangle "XLM-R-Customer-Data" as XLMR_1
+    rectangle "XLM-R-SalesPerson-Data" as XLMR_2
+  }
+  
+  T5_1 <-down- XLMR_1 : Informs
+  T5_1 <-down- XLMR_2 : Informs
+  T5_2 <-up- RFC : Informs
+  T5_2 <-up- SVM : Informs
+  T5_2 <-up- LR : Informs
+  T5_2 <-up- XLMR_3 : Informs
+}
+
+note left of MM
+This ensemble-based foundation model
+acts as a "model wrapper" to derive
+insights from various models,
+similar to widely used libraries.
+end note
+
+@enduml

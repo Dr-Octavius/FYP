@@ -1,0 +1,33 @@
+@startuml
+
+circle Input1 as "Customer Transcription"
+circle Output1 as "Suggested \nReply"
+circle Input2 as "Prompts from user"
+circle Output2 as "Dialogue Plan"
+
+node "XLM-R-Combined" as FullDialogueXLMR 
+node "SVM" as SVM
+node "RFC" as RFC
+node "LR" as LR
+node "XLM-R-Customer" as CustomerXLMR
+node "XLM-R-Salesperson" as SalespersonXLMR
+
+rectangle "Meta-Models" {
+  package "Conversational Model" as T5_Model1
+  package "Dialogue Planner Model" as T5_Model2 
+  Input1 -up-> CustomerXLMR 
+  CustomerXLMR -up-> T5_Model1 : Applies customer \n context
+  SalespersonXLMR -right-> T5_Model1 : Refines with Prompt
+  T5_Model1 -up-> Output1 : Generate
+  
+  Input2 -up-> FullDialogueXLMR
+  FullDialogueXLMR -up-> SVM : Applies \n dialogue context
+  FullDialogueXLMR -up-> RFC 
+  FullDialogueXLMR -up-> LR 
+  RFC -up-> T5_Model2 
+  LR -up-> T5_Model2 
+  SVM -up-> T5_Model2 : Applies \n more context
+  T5_Model2 -up-> Output2 : Generate
+}
+
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+
+package "Numerical Models" as NumericalModels {
+
+    package "SVM Model" as SVM
+    package "LR Model" as LR
+    package "RFC Model" as RFC
+
+}
+
+package data as "Training data"
+package "Has \nApppointments Slice" as data_y1
+package "Number of \nApppointments Slice" as data_y2
+
+circle "One-Hot \n Encoding" as Encoding
+circle "Normalise" as Normalization
+
+data -right-> Normalization : Normalise \n Data
+Normalization -right-> Encoding : Encode \n Data
+Encoding --> data_y1 : Y Predicate 1
+Encoding --> data_y2 : Y Predicate 2
+data_y1 --> SVM : Trained \n on
+data_y1 --> LR : Trained \n on
+data_y2 --> RFC : Trained \n on
+
+@enduml

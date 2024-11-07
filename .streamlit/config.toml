@@ -1,0 +1,8 @@
+[theme]
+primaryColor = "#f0767b"            # Red color from the logo for primary elements
+backgroundColor = "#1E1E1E"          # White background for light mode
+secondaryBackgroundColor = "#333333" # Light gray for secondary background
+textColor = "#4cdccc"                # Dark gray for primary text color in light mode
+font = "sans serif"                  # Font setting (optional)
+
+#fccc6f for yellow

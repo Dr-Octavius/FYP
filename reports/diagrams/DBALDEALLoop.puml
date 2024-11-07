@@ -1,0 +1,48 @@
+@startuml
+
+rectangle "DBAL/DEAL Integration" {
+  
+  rectangle "Main Pipeline" {
+    folder "pipeline" {
+      circle new_pipeline_2 as "Training \n start"
+      file "train.py" as ModelTrain
+      file "evaluate.py" as ActiveEval
+      
+      folder "models" as Models {
+        folder "Trained_Models"
+        folder "Training_Models" 
+      }
+      folder "results"
+    }
+  }
+
+  rectangle "Active Learning Loop" {
+    folder data {
+      folder labelled as "Training data"
+      folder unlabelled
+    }
+
+    rectangle "Data Annotation" as DataAnnotation {
+      folder notebooks
+    }
+    
+    rectangle "Evaluation & Feedback" as EvaluationFeedback {
+      agent "Oracle" as oracle
+    }
+  }
+  circle new_pipeline as "New \n Training Start"
+}
+
+oracle <--> unlabelled #CC5500 : "Identify \n samples"
+oracle --> DataAnnotation #CC5500 : "Label \n samples"
+notebooks -down-> labelled #CC5500 : "Enrich with \n labelled data"
+labelled <-up- new_pipeline #CC5500 : "Reference \n new data"
+new_pipeline_2 -down-> ModelTrain #CC5500 : "Starts Next Training"
+ModelTrain --> Training_Models #CC5500 : "Train \n New Models"
+Training_Models --> ActiveEval #CC5500 : "Evaluate \n Models"
+ActiveEval --> oracle #FF0000 : "Assess \n evaluation"
+results --> oracle #FF0000 : "Assess \n results"
+oracle -..> Training_Models #005500 : "Accepts \n New Models"
+Training_Models .down.> Trained_Models #005500 : "Accepts \n New Models"
+
+@enduml

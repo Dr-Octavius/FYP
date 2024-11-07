@@ -1,0 +1,40 @@
+@startuml
+
+skinparam rectangle {
+    BackgroundColor<<Entropy>> LightBlue
+    BackgroundColor<<Variance>> LightGreen
+}
+
+rectangle "Sample Pool" {
+    rectangle "Data Samples" as DataSamples
+}
+
+rectangle "Entropy-Based Selection" as EntropySelection <<Entropy>> {
+    rectangle "Calculate Entropy" as CalcEntropy
+    rectangle "Select High-Entropy Samples" as HighEntropySelect
+    CalcEntropy --> HighEntropySelect : High entropy = \nUncertain samples
+}
+
+rectangle "Variance Sampling" as VarianceSampling <<Variance>> {
+    rectangle "Calculate Variance" as CalcVariance
+    rectangle "Select High-Variance Samples" as HighVarianceSelect
+    CalcVariance --> HighVarianceSelect : High variance = \n Disagreement samples
+}
+
+rectangle "Active Learning Selection" as ActiveLearningSelection {
+    rectangle "Label Ambiguous Samples" as LabelSamples
+}
+
+circle models
+
+DataSamples --> CalcEntropy : Feed data
+DataSamples --> CalcVariance : Feed data
+
+CalcEntropy --> HighEntropySelect : Identifies \n uncertain samples
+CalcVariance --> HighVarianceSelect : Identifies \n disagreement samples
+
+HighEntropySelect --> LabelSamples : Prioritize \n uncertain samples
+HighVarianceSelect --> LabelSamples : Prioritize \n disagreement samples
+LabelSamples --> models : Label data \n & update models
+
+@enduml

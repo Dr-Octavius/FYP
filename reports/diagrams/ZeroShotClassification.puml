@@ -1,0 +1,24 @@
+@startuml
+entity Dataframe
+entity TextData
+entity ZeroShotClassifier
+entity Output
+
+Dataframe -> TextData: Input Text Data (T_i)
+TextData -> TextData: Segment Text Fields\nT_i = {T_i1, T_i2, ..., T_in}
+
+TextData -> ZeroShotClassifier: Define Labels L = {high-quality, generic}
+ZeroShotClassifier -> TextData: Labels Created
+
+loop For each segment T_ij in T_i
+    TextData -> ZeroShotClassifier: Classify T_ij\nConfidence C_ij > θ
+    ZeroShotClassifier -> TextData: Assign label l_ij in L
+end
+
+TextData -> TextData: Convert Labels to Counts\nQ_i = Σ l_ij[high-quality]
+
+TextData -> TextData: Compute Strength Index\nS_i = Q_i / avg(Q)
+
+TextData -> Output: Produce Numerical Output Q_i, S_i
+Dataframe <- Output: Store Quantitative Label
+@enduml

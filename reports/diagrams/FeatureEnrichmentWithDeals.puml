@@ -1,0 +1,42 @@
+@startuml
+entity DF as working_df
+entity SF as deal_service
+entity HSApi
+entity DealsDF as deals_df
+
+== Extract & Prepare Data ==
+working_df -> working_df : Explode & clean 'Deal IDs'
+working_df -> deals_df : store 'Deal IDs' in DealsDF
+
+== Fetch Deal Info ==
+loop For each deal_id in DealsDF
+    deals_df -> deal_service : Set params
+    deal_service -> HSApi : Fetch external data
+    HSApi --> deal_service : Return external
+    deal_service -> deals_df : store details
+end
+
+== Feature #1 ==
+loop For each ids_list in 'Deal IDs'
+    alt ids_list is empty
+        working_df -> working_df : Set 'No. of Appts' = 0
+    else
+        working_df -> deals_df : Filter for matching id
+        deals_df --> working_df : Return matching details
+        working_df -> working_df : Set 'Number of Appointments'\nbased on details
+    end
+end
+
+== Feature #2 ==
+working_df -> working_df : Calculate 'Appt Strength' = (Appointments / IDs count)
+== Feature #3 ==
+working_df -> working_df : Set 'Has Appt' = True if Appointments > 0
+
+header
+  **Legend**
+  **DF : DataFrame**
+  **HS : HubSpot**
+  **SF : ServiceFactory**
+  **Appt : Appointments**
+end header
+@enduml

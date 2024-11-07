@@ -1,0 +1,39 @@
+@startuml
+rectangle "Active Learning Framework" as ActiveLearning {
+  package "XLM-R Models" as XLMRModels {
+      rectangle "Customer-Only XLM-R Model" as CustomerXLMR
+      rectangle "Salesperson-Only XLM-R Model" as SalespersonXLMR
+      rectangle "Full Dialogue XLM-R Model" as FullDialogueXLMR 
+  }
+  
+  package data {
+    package labelled {
+      folder "Customer \nSegments" as CS
+      folder "Salesperson \nSegments" as SS
+      folder "Combined \nSegments" as CombS
+      folder "OpenSMILE \n features" as OS
+    }
+  }
+  
+  package "data" as data_2 {
+    package unlabelled {
+      folder "Unlabelled \nTranscriptions" as UT
+    }
+  }
+  
+  circle Oracle
+  rectangle "evaluate.py" as Evaluation
+}
+
+CS <-up- CustomerXLMR : Trained \n on
+SS <-up- SalespersonXLMR : Trained \n on
+CombS <-up- FullDialogueXLMR : Trained \n on
+OS <-up- FullDialogueXLMR : Trained \n on
+Oracle -left-> unlabelled #FF0000 : Select \n Samples
+unlabelled .down.> CustomerXLMR #FF0000 : Retrain
+unlabelled .down.> SalespersonXLMR #FF0000 : Retrain
+unlabelled .down.> FullDialogueXLMR #FF0000 : Retrain
+Evaluation <.down. XLMRModels #FF0000 : Run \n Evaluation
+Evaluation .right.> Oracle #FF0000 : Assess \n uncertainty
+
+@enduml
