@@ -1,5 +1,3 @@
-<<<<<<< HEAD:src/evaluate.py
-=======
 import joblib
 import pandas as pd
 import model_preprocessing as mP
@@ -61,4 +59,3 @@ def main():
 
 if __name__ == "__main__":
     main()
->>>>>>> efa0d09 (feat: FYP major commit):src/pipeline/evaluate.py
