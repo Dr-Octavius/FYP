@@ -8,6 +8,7 @@ __pycache__/
 
 # Distribution / packaging
 data/
+tmp/
 src/config.py
 .Python
 build/
