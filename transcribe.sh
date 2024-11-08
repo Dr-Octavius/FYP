@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Array of model types and corresponding batch sizes and output directories
-models=("medium" "large" "large-v2" "large-v3" "turbo")
-batch_sizes=(32 16 16 16 8)
+models=("medium") #"large" "large-v2" "large-v3" "turbo")
+batch_sizes=(32) #16 16 16 8)
 
 # Iterate over models, batch sizes, and output directories
 for i in ${!models[@]}; do
